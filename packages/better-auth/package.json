@@ -12,7 +12,8 @@
     "lint": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
-    "@email-validator/core": "workspace:*"
+    "@email-validator/core": "workspace:*",
+    "better-auth": "^1.7.2"
   },
   "devDependencies": {
     "@types/node": "^26.4.1",

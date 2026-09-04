@@ -81,11 +81,11 @@ const result = await validateEmail("user@example.com", {
 Add the adapter to your Better Auth server configuration:
 
 ```ts
-import { emailGuard } from "@email-validator/better-auth";
+import { emailValidator } from "@email-validator/better-auth";
 
 export const auth = betterAuth({
   plugins: [
-    emailGuard({
+    emailValidator({
       disposable: ["tempmail.com", "mail.example"],
       mx: true,
       resolver: resolveMxWithNode,
