@@ -10,7 +10,7 @@
 
 The core package never downloads or owns a disposable-domain list. Each application supplies its own list or lookup function.
 
-The repository includes an optional generated union of two public lists at [`packages/data/disposable-domains.txt`](packages/data/disposable-domains.txt). The validator never loads this file automatically, so applications can ignore it or provide their own data.
+The repository includes an optional generated union of public lists at [`packages/data/disposable-domains.txt`](packages/data/disposable-domains.txt). The validator never loads this file automatically, so applications can ignore it or provide their own data.
 
 Use `blocklist` to reject entire domains and `blacklist` to reject specific email addresses:
 
