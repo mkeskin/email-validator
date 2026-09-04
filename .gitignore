@@ -1,0 +1,9 @@
+node_modules
+pnpm-lock.yaml
+package-lock.json
+npm-shrinkwrap.json
+yarn.lock
+dist
+.turbo
+.env*
+!.env.example
