@@ -1,0 +1,16 @@
+{
+  "name": "@email-validator/data",
+  "version": "0.1.0",
+  "description": "Optional disposable email domain data for email-validator.",
+  "license": "MIT",
+  "files": [
+    "disposable-domains.txt",
+    "README.md"
+  ],
+  "exports": {
+    "./disposable-domains.txt": "./disposable-domains.txt"
+  },
+  "scripts": {
+    "test": "node --test"
+  }
+}

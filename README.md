@@ -6,8 +6,11 @@
 
 - `@email-validator/core` normalizes addresses, checks user-supplied domain lists, calls MX resolvers, and runs custom checks.
 - `@email-validator/better-auth` connects the core validator to a Better Auth `before` hook.
+- `@email-validator/data` provides an optional generated disposable-domain list.
 
 The core package never downloads or owns a disposable-domain list. Each application supplies its own list or lookup function.
+
+The repository includes an optional generated union of two public lists at [`packages/data/disposable-domains.txt`](packages/data/disposable-domains.txt). The validator never loads this file automatically, so applications can ignore it or provide their own data.
 
 Use `blocklist` to reject entire domains and `blacklist` to reject specific email addresses:
 
@@ -24,7 +27,18 @@ The validator normalizes blacklist entries before it compares them, so email com
 
 ```sh
 npm add @email-validator/core
+```
+
+Install the Better Auth adapter only when you use Better Auth:
+
+```sh
 npm add @email-validator/better-auth
+```
+
+Install the optional disposable-domain dataset only when you want to use the repository's merged list:
+
+```sh
+npm add @email-validator/data
 ```
 
 ## Quick Start
@@ -47,6 +61,25 @@ The validator skips disposable checks when you omit `disposable`. You can pass a
 const result = await validateEmail(email, {
   disposable: async (domain) => myDomainStore.has(domain),
 });
+```
+
+To use the optional dataset, read its installed file and pass the resulting array to `disposable`:
+
+```ts
+import { createRequire } from "node:module";
+import { dirname, join } from "node:path";
+import { readFile } from "node:fs/promises";
+
+const require = createRequire(import.meta.url);
+const dataPath = join(
+  dirname(require.resolve("@email-validator/data/package.json")),
+  "disposable-domains.txt",
+);
+const domains = (await readFile(dataPath, "utf8"))
+  .split("\n")
+  .filter(Boolean);
+
+const result = await validateEmail(email, { disposable: domains });
 ```
 
 ## MX Validation
@@ -100,6 +133,36 @@ The adapter reads the email from the hook input, calls `validateEmail`, and reje
 
 Cloudflare Workers does not provide Node.js's `node:dns` API. Use DNS-over-HTTPS instead: the resolver sends the MX query through an HTTP request, and the Worker can perform that request with the standard `fetch` API. This approach keeps `@email-validator/core` runtime-agnostic and avoids Node.js-only dependencies.
 
+Wrangler must load the optional domain list as a text module. Add this rule to `wrangler.jsonc`:
+
+```jsonc
+{
+  "rules": [
+    {
+      "type": "Text",
+      "globs": ["**/*.txt"]
+    }
+  ]
+}
+```
+
+Then install `@email-validator/data` and import the list:
+
+```ts
+import domainsText from "@email-validator/data/disposable-domains.txt";
+
+const disposableDomains = domainsText.split("\n").filter(Boolean);
+```
+
+TypeScript projects may also need this declaration:
+
+```ts
+declare module "*.txt" {
+  const content: string;
+  export default content;
+}
+```
+
 Inject a DNS-over-HTTPS resolver:
 
 ```ts
@@ -123,8 +186,8 @@ const result = await validateEmail(email, {
 
 ```sh
 npm install
-npm build
-npm typecheck
+npm run build
+npm run typecheck
 npm test
 npm run lint:tslint
 ```
