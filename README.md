@@ -14,7 +14,7 @@ Use `blocklist` to reject entire domains and `blacklist` to reject specific emai
 ```ts
 const result = await validateEmail(email, {
   blocklist: ["blocked.example"],
-  blacklist: ["abuse@example.com", "former-user@example.com"]
+  blacklist: ["abuse@example.com", "former-user@example.com"],
 });
 ```
 
@@ -23,8 +23,8 @@ The validator normalizes blacklist entries before it compares them, so email com
 ## Install
 
 ```sh
-pnpm add @email-validator/core
-pnpm add @email-validator/better-auth
+npm add @email-validator/core
+npm add @email-validator/better-auth
 ```
 
 ## Quick Start
